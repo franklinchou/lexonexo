@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }} Privacy{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+  <div class="col-sm-3"></div>
+
+  <div class="col-sm-6">
+
+  <div class="page-header">
+    <h1>Privacy policy</h1>
+  </div>
+
+  <p><b style="font-size: 150%">LEXIS</b>: I don't use your Lexis login information for anything.
+  In fact, I've designed the software in a way that I don't actually know what username/password
+  combination you've entered. (If you're inclined, you can even check out the
+  <a href="{{ url_for('public.source') }}">source code</a> to prove I'm not lying.) Even if I
+  <em>could</em> see your Lexis passwords, that
+  information would just narrowly fail to be at all interesting to me.</p>
+
+  <p><b style="font-size: 150%">E-mail</b>: I <b>DO</b> collect the e-mail address you use to make
+  your {{ config.PROJ_NAME }} account. But this information isn't shared or sold to any other
+    organizations.</p>
+
+  </div>
+
+  <!-- just to tidy up-->
+  <div class="col-sm-3"></div>
+</div>
+
+{% endblock %}

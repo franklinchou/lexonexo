@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }}{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+  <div class="col-sm-3"></div>
+
+  <div class="col-sm-6">
+
+  <div class="page-header">
+    <h1>Welcome to {{ config.PROJ_NAME }}</h1>
+  </div>
+
+  <p>If you're anything like me, you came to law school for one reason only: To get obscene amounts
+  of Lexis points. (<a href="https://twitter.com/franklinchou/status/451509305255395328">Proof.</a>)
+  That's where {{ config.PROJ_NAME }} comes in. You know those daily research points? Now you can get them
+  <b>EVERYDAY</b>. Even if you don't do any legal research!</p>
+
+  <h2>That's too good to be true, right?</h2>
+  <p><center><img src="http://i.imgur.com/I8kq0uJ.gif" alt="Louis CK: Nope"></img></center></p>
+  <p>Nothing is too good to be true through the power of the Interweb! (Yeah, get your head around
+  that one.) Basically, {{ config.PROJ_NAME }} works by simulating an actual person logging in 
+  to Lexis and searching for a case or a statute. I like to imagine that Hannah Simone is doing
+  my daily Lexis searches.</p>
+
+  <h2>Where do I sign?</h2>
+  <p>If you think {{ config.PROJ_NAME }} sounds great you can sign up for an account 
+  <a href="{{ url_for('auth.register') }}">right here</a>.</p>
+  <p>If you think {{ config.PROJ_NAME }} is stupid, well shove it, no one asked you anyway.</p>
+
+  </div>
+
+  <div class="col-sm-3"></div>
+
+</div>
+
+{% endblock %}

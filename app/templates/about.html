@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }} About{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+  <div class="col-sm-3"></div>
+
+  <div class="col-sm-6">
+
+    <div class="page-header">
+      <h1>About me</h1>
+    </div>
+
+    <blockquote>
+      <p>Automate all the things!</p>
+    </blockquote>
+
+    <p>I'm Franklin Chou. I'm a 3L at Seton Hall Law School. I started developing software in my
+    late teens to automate boring stuff. The human mind is immensely powerful. But it gets bored
+    easily and when it gets bored it makes mistakes. So I thought: Why not leave the boring stuff
+    to machines? Many years later, I find that there is still a lot of stuff that needs automation.
+    </p>
+
+    <p>To further my goal of world automation I'm currently learning ES6. I'm still learning C, Java
+    and Python. I do most of my development in Arch Linux.
+    </p>
+
+    <div class="page-header">
+      <h1>Colophon</h1>
+    </div>
+
+    <p>Lexomatic is built on the Flask web application microframework. Lexomatic talks to
+    databases using SQLAlchemy. Web forms are rendered through WTForm. And database storage is
+    provided by SQLite.</p>
+
+    <p>The heart of Lexomatic is in the Selenium web driver automation package. Selenium does all
+    the heavy lifting. From verifying Lexis logins to performing legal search queries, Lexomatic
+    loves Selenium!</p>
+
+    <h2>There's always room for improvement:</h2>
+    <p>Concurrent database access is limited, mostly by the embedded nature of SQLite.</p>
+
+    <h2>Except when there isn't...</h2>
+    <p>Access to Lexis is done through passing of actual user login information. No
+    Lexis backend or RESTful API is available (AFAIK). Lexis credentials are encrypted to
+    mitigate security risks caused by storage of user information.</p>
+
+  </div>
+
+  <div class="col-sm-3"></div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }}{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+
+  <div class="col-sm-3"></div>
+
+  <div class="col-sm-6">
+
+    <div class="page-header">
+      <h1>Mazel Tov!</h1>
+    </div>
+
+    <p>Your {{ config.PROJ_NAME }} account has been confirmed. We've even done a test run to check that
+    your Lexis Advance account actually works! (Good news: It does!) You should be getting
+    Daily Research Points everyday now automagically! Rock on!</p>
+
+    </div>
+  </div>
+
+  <div class="col-sm-3"></div>
+
+</div>
+
+{% endblock %}

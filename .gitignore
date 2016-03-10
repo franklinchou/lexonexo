@@ -1,0 +1,25 @@
+.env
+
+venv/*
+database/*
+migrations/*
+sched/*
+
+tests/*
+!tests/test*.py
+
+app/main/dep/*
+app/templates/t_metrics.html
+
+# Log files
+*.log
+out.png
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
