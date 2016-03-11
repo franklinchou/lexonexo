@@ -1,7 +1,7 @@
 .env
 
 venv/*
-database/*
+# database/*
 migrations/*
 sched/*
 
