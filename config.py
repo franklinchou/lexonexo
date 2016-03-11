@@ -46,8 +46,13 @@ class DevelopmentConfig(Config):
         )
 
 class ProductionConfig(Config):
-    pass
+    DEBUG       = False
+
+    DATABASE_URI            = os.environi.get('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI
 
 config = {
-    'default': DevelopmentConfig
+    'default': DevelopmentConfig,
+
+    'production': ProductionConfig
 }
