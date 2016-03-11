@@ -35,6 +35,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG       = True
+    SSL_DISABLE = True
     MY_UNAME    = os.environ.get('MY_UNAME')
     MY_PWD      = os.environ.get('MY_PWD')
 
@@ -47,11 +48,13 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG       = False
+    SSL_DISABLE = False
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 config = {
     'default': DevelopmentConfig,
 
+    'devel' : DevelopmentConfig,
     'production': ProductionConfig
 }

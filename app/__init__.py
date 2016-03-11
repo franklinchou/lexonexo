@@ -15,6 +15,10 @@ login_manager.login_view = 'auth.login'
 
 def create_app(config_name):
     app = Flask(__name__)
+
+    # Do I always have to strip quotes from conifg vars taken from env?
+    config_name = config_name.strip('\'')
+
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
@@ -23,7 +27,16 @@ def create_app(config_name):
     bootstrap.init_app(app)
     login_manager.init_app(app)
 
+#------------------------------------------------------------------------------
+    # SSLify
+#------------------------------------------------------------------------------
+    if not app.config['SSL_DISABLE']:
+        from flask.ext.sslify import SSLify
+        sslify = SSLify(app)
+
+#------------------------------------------------------------------------------
     # attach routes
+#------------------------------------------------------------------------------
 
     from .public import public as public_blueprint
     app.register_blueprint(

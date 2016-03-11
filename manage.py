@@ -1,3 +1,5 @@
+#! /usr/bin/python3.5
+
 import os
 
 from flask.ext.script import Manager, Shell
@@ -8,7 +10,7 @@ from app.models import User
 
 # app = create_app('default')
 
-app = create_app('production')
+app = create_app(os.environ.get('CONFIG'))
 
 manager = Manager(app)
 migrate = Migrate(app, db)
