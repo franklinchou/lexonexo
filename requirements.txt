@@ -21,6 +21,7 @@ Mako==1.0.3
 MarkupSafe==0.23
 Naked==0.1.31
 pathtools==0.1.2
+psycopg2==2.6.1
 pycrypto==2.6.1
 python-editor==0.5
 pytz==2015.7
