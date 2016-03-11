@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
 
     la_username = db.Column(db.String(64), unique = True)
-    la_password_encrypted = db.Column(db.String(128))
+    la_password_encrypted = db.Column(db.String(512))
     confirmed = db.Column(db.Boolean, default = False)
 
     last_run = db.Column(db.DateTime())
