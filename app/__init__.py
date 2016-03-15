@@ -31,7 +31,7 @@ def create_app(config_name):
     # SSLify
 #------------------------------------------------------------------------------
     if not app.config['SSL_DISABLE']:
-        from flask.ext.sslify import SSLify
+        from flask_sslify import SSLify
         sslify = SSLify(app)
 
 #------------------------------------------------------------------------------
