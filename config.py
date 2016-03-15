@@ -29,6 +29,10 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
 
+    # Changed local database to mirror remote
+    DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
+
     @staticmethod
     def init_app(app):
         pass
@@ -39,18 +43,11 @@ class DevelopmentConfig(Config):
     MY_UNAME    = os.environ.get('MY_UNAME')
     MY_PWD      = os.environ.get('MY_PWD')
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////' +\
-        os.path.join(
-            basedir,
-            'database',
-            'database.sqlite'
-        )
 
 class ProductionConfig(Config):
     DEBUG       = False
     SSL_DISABLE = False
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 config = {
     'default': DevelopmentConfig,
