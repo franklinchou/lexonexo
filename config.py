@@ -46,7 +46,7 @@ class DevelopmentConfig(Config):
 
 
 class ProductionConfig(Config):
-    DEBUG       = False
+    DEBUG       = True
     SSL_DISABLE = False
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
