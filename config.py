@@ -46,7 +46,7 @@ class DevelopmentConfig(Config):
 
 
 class ProductionConfig(Config):
-    DEBUG       = True
+    DEBUG       = False
     SSL_DISABLE = False
 
     CSRF_ENABLED = True
