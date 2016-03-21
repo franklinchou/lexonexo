@@ -9,7 +9,7 @@ from app import db
 
 from flask import current_app
 
-def mkdb(testing=True):
+def mkdb(testing):
 
     total_query = 'SELECT COUNT(id) FROM users'
 
@@ -26,15 +26,21 @@ def mkdb(testing=True):
         # Add dummy row
 #------------------------------------------------------------------------------
 
-        db.engine.execute(
-            'INSERT INTO users(email) VALUES(\'franklin.chou@student.shu.edu\')'
-        )
+        if (testing == True):
+            db.engine.execute(
+                'INSERT INTO users(email) VALUES(\'franklin.chou@student.shu.edu\')'
+            )
 
-        after = db.engine.execute(total_query)
-        assert(after == 1)
+            after = db.engine.execute(total_query)
+            assert(after == 1)
 
         if (testing == False):
             db.session.commit()
 
-if __name__ = '__main__':
-    mkdb()
+if __name__ == '__main__':
+    from sys import argv
+
+    if (len(argv) == 0 and arv[0] == 'test'):
+        mkdb(testing=True)
+    else:
+        mkdb(testing=False)
