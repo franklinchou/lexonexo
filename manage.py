@@ -34,6 +34,34 @@ manager.add_command(
     MigrateCommand
 )
 
+
+"""
+    Note:
+    If executing locally, must first start postgres db, execute:
+
+    `systemctl start postgresql.service`
+
+    WARNING: System will prompt for admin password
+"""
+@manager.command
+def runall():
+    '''
+        Runs Lexo worker(s) on the entire saved user base
+    '''
+
+    # from flask import current_app
+    from app.main.runner import Runner
+
+    # WARNING: This is HIGHLY unoptimized; if something breaks, check here first
+    with app.app_context():
+        for u in db.session.query(User):
+            print(u.la_password_encrypted)
+            with Runner(u.la_username, u.la_password_encrypted) as r:
+                r.login()
+                r.query()
+                if (r.passed == True):
+                    u.last_run = datetime.utcnow()
+
 @manager.command
 def test():
     import unittest

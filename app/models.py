@@ -53,6 +53,10 @@ class User(UserMixin, db.Model):
     def la_password(self, la_password):
         raise AttributeError("`la_password` is not a readable attribute")
 
+
+    # WARNING:
+    #   Anomaly in la_password usage on development server likely caused by
+    #     `strip()` function in development code. Refactor.
     @la_password.setter
     def la_password(self, la_password):
         key = current_app.config['LEXIS_VAULT_KEY']

@@ -140,7 +140,7 @@ class Runner(object):
             pass
 
         self.passed = True
-        return self.passed
+        # return self.passed
 
     def __exit__(self, exc_type, exc_value, traceback):
         # self.wd.save_screenshot('out.png')
