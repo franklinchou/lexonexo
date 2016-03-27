@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }}{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+
+  <div class="col-sm-2"></div>
+
+  <div class="col-sm-8">
+      <div class="page-header">
+        <h1>Last run:</h1>
+      </div>
+      {{ last_run }}
+  </div>
+
+  <div class="col-sm-2"></div>
+</div>
+
+{% endblock %}
