@@ -51,16 +51,15 @@ def runall():
 
     # from flask import current_app
     from app.main.runner import Runner
+    from datetime import datetime
 
     # WARNING: This is HIGHLY unoptimized; if something breaks, check here first
-    with app.app_context():
-        for u in db.session.query(User):
-            print(u.la_password_encrypted)
-            with Runner(u.la_username, u.la_password_encrypted) as r:
-                r.login()
-                r.query()
-                if (r.passed == True):
-                    u.last_run = datetime.utcnow()
+    for u in db.session.query(User):
+        with Runner(u.la_username, u.la_password_encrypted) as r:
+            r.login()
+            r.query()
+            if (r.passed == True):
+                u.last_run = datetime.utcnow()
 
 @manager.command
 def test():
