@@ -3,13 +3,17 @@
 venv/*
 database/*
 # migrations/*
-sched/*
 
 tests/*
 !tests/test*.py
 
 app/main/dep/*
 app/templates/t_metrics.html
+
+#### scheduler
+sched/var/redis/*
+# Do not ignore redis configuration
+!sched/var/redis/redis.conf
 
 # Log files
 *.log
