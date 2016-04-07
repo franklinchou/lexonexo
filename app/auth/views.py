@@ -13,6 +13,10 @@ from . import auth
 from .forms import LoginForm, RegistrationForm
 from ..models import User
 
+# import scheduler
+from ..main import sc
+
+
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -74,6 +78,12 @@ def register():
             return redirect(url_for('auth.register_failure'))
         else:
             db.session.add(user)
+
+        # If registration is a success, add to RQ.
+        sc.add_to_queue(
+            form.email.data,
+            None
+        )
 
         return redirect(url_for('auth.register_success'))
 

@@ -5,4 +5,6 @@ main = Blueprint(
     __name__
 )
 
-from . import views, errors
+from . import views,\
+    errors,\
+    sc
