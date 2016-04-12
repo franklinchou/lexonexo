@@ -1,19 +1,26 @@
+# from app import queue
 
-from app.config import redis
-from app.utils import lock
+# from . import job
 
-from ..models import User
+from app import queue_instance,\
+    redis,\
+    db
 
-from datetime import datetime
+from ..models import User,\
+    TaskStatus,\
+    Task
 
 from ..main.runner import Runner
+
+from app.utils import lock
+
+from datetime import datetime
 
 '''
     Execute lexis nexis query
 '''
-@queue.job
+@queue_instance.job()
 def execute_lnq(user_id):
-
     with lock(redis, user_id):
         user = User.query.get(user_id)
         task = Task.query.get(user.task_id)
@@ -37,7 +44,7 @@ def execute_lnq(user_id):
 #------------------------------------------------------------------------------
         # Can I piggy back off the context created with the lock util?
         print('reached')
-        with Runner (user.la_username, user.la_password_encrypted) as r:
+        with Runner(user.la_username, user.la_password_encrypted) as r:
             r.login()
             r.query()
             if (r.passed == True):
