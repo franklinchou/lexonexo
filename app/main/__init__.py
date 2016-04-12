@@ -6,5 +6,4 @@ main = Blueprint(
 )
 
 from . import views,\
-    errors,\
-    sc
+    errors

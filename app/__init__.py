@@ -6,12 +6,19 @@ from flask_sqlalchemy import SQLAlchemy
 
 from config import config
 
+#------------------------------------------------------------------------------
+# Automated task queue
+#------------------------------------------------------------------------------
+from app.queue import Queue
+
 bootstrap = Bootstrap()
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
+
+queue = Queue()
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -26,6 +33,11 @@ def create_app(config_name):
 
     bootstrap.init_app(app)
     login_manager.init_app(app)
+
+#------------------------------------------------------------------------------
+    # Automated task queue
+#------------------------------------------------------------------------------
+    queue.init_app(app, db)
 
 #------------------------------------------------------------------------------
     # SSLify

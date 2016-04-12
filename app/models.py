@@ -4,8 +4,10 @@ from flask import current_app
 from werkzeug.security import generate_password_hash,\
     check_password_hash
 
+from datetime import datetime
+
 #------------------------------------------------------------------------------
-# 2 way encryption
+# Encryption
 #------------------------------------------------------------------------------
 
 from Crypto import Random
@@ -20,11 +22,17 @@ from app import db
 
 from . import login_manager
 
+#------------------------------------------------------------------------------
+# USER STORAGE
+#------------------------------------------------------------------------------
 class User(UserMixin, db.Model):
 
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key = True)
+
+    ### Task id links user to queue
+
     email = db.Column(db.String(64), unique = True, index = True)
     password_hash = db.Column(db.String(128))
 
@@ -46,7 +54,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 #------------------------------------------------------------------------------
-# Lexis password storage
+    # Lexis password storage
 #------------------------------------------------------------------------------
 
     @property
@@ -73,3 +81,97 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+#------------------------------------------------------------------------------
+# TASK STORAGE
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Status labels
+#------------------------------------------------------------------------------
+class TaskStatus(object):
+    pending = 0
+    in_progress = 1
+    finished = 2
+
+    cancelled = 3
+    failed = 4
+
+    unknown = 5
+
+    @classmethod
+    def get_label(cls, status):
+        return STATUS_LABELS[status]
+
+    @classmethod
+    def label_to_id(cls, label):
+        return STATUS_LABELS_REV[label]
+
+STATUS_LABELS = {
+    TaskStatus.pending : 'pending',
+    TaskStatus.in_progress : 'in_progress',
+    TaskStatus.finished : 'complete',
+
+    TaskStatus.cancelled : 'cancelled',
+    TaskStatus.failed : 'failed',
+
+    TaskStatus.unknown : 'unknown',
+}
+
+STATUS_LABELS_REV = {
+    v : k for k, v in STATUS_LABELS.items()
+}
+
+#------------------------------------------------------------------------------
+# Table for storing queued tasks (& status)
+#------------------------------------------------------------------------------
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+
+    # index by user_id
+    __table_args__ = (
+        db.Index('idx_task_user_id', 'user_id'),
+    )
+
+    id = db.Column(db.Integer, primary_key = True)
+
+    # app_id
+
+    user_id =\
+        db.Column(
+            db.Integer,
+            db.ForeignKey('users.id', ondelete = "CASCADE"),
+            nullable = False
+        )
+
+    status = db.Column(db.Integer, nullable = False)
+
+    date_created =\
+        db.Column(
+            db.DateTime,
+            default = datetime.utcnow,
+            nullable = False
+        )
+
+    status = db.Column(db.Integer, nullable = False)
+
+    forced = db.Column(db.Boolean)
+
+    date_started = db.Column(db.DateTime)
+    date_complete = db.Column(db.DateTime)
+
+    @property
+    def was_forced(self):
+        return self.forced
+
+    @property
+    def status_label(self):
+        return STATUS_LABELS.get(self.status, 'unknown')
+
+    @property
+    def duration(self):
+        if not (self.date_complete and self.date_started):
+            return
+        return float('%.2f' % (self.date_complete - self.date_started).total_seconds())

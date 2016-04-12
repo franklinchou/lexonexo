@@ -9,13 +9,11 @@ from flask.ext.login import login_user,\
     login_required
 
 from app import db
+from app import queue
+
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from ..models import User
-
-# import scheduler
-from ..main import sc
-
 
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -79,11 +77,8 @@ def register():
         else:
             db.session.add(user)
 
-        # If registration is a success, add to RQ.
-        sc.add_to_queue(
-            form.email.data,
-            None
-        )
+        # Once registered add user to queue
+        queue.add_to_queue('app.jobs.execute_task', user.id)
 
         return redirect(url_for('auth.register_success'))
 

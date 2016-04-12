@@ -174,4 +174,3 @@ class VerifyRunner(Runner):
             self.login_passed = True
         else:
             raise Exception
-

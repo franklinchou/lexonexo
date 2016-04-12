@@ -34,6 +34,25 @@ class Config:
     def init_app(app):
         pass
 
+#------------------------------------------------------------------------------
+# Task automation, trial 1, April 2016
+#------------------------------------------------------------------------------
+
+    QUEUES = [
+        'app.tasks',
+    ]
+
+    QUEUE_DEFAULT = 'app.tasks'
+
+    QUEUE_ROUTES = {
+        'app.jobs.execute_task' : 'app.tasks',
+    }
+
+    QUEUE_SCHEDULE = {
+    }
+
+
+
 class DevelopmentConfig(Config):
     DEBUG       = True
     SSL_DISABLE = True
@@ -44,6 +63,8 @@ class DevelopmentConfig(Config):
     DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
+    REDIS_URL = 'localhost:6379'
+
 
 class ProductionConfig(Config):
     DEBUG       = False
@@ -52,6 +73,8 @@ class ProductionConfig(Config):
     CSRF_ENABLED = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
+    REDIS_URL = os.environ.get('REDIS_URL')
 
 config = {
     'default': DevelopmentConfig,

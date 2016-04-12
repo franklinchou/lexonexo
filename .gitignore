@@ -1,6 +1,8 @@
+### virtual environment stuff
 .env
-
 venv/*
+
+### database
 database/*
 # migrations/*
 

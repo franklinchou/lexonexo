@@ -6,6 +6,8 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from app import create_app, db
+from app.queue import Queue
+
 from app.models import User
 
 # app = create_app('default')
@@ -19,7 +21,8 @@ def make_shell_context():
     return dict(
         app = app,
         db = db,
-        User = User
+        User = User,
+        queue = Queue,
     )
 
 manager.add_command(
