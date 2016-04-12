@@ -14,6 +14,7 @@ from app.queue import Queue
 from flask_redis import Redis
 
 redis = Redis()
+queue_instance = Queue()
 #------------------------------------------------------------------------------
 
 bootstrap = Bootstrap()
@@ -23,7 +24,6 @@ login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
-queue_instance = Queue()
 
 def create_app(config_name):
     app = Flask(__name__)
