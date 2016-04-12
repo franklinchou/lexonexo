@@ -109,6 +109,9 @@ class Queue(object):
             connection = self.connection,
         )
 
+#------------------------------------------------------------------------------
+# Scheduler
+#------------------------------------------------------------------------------
 class Scheduler(object):
     schedule_key = 'rq:schedule'
 

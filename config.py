@@ -29,7 +29,6 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
 
-
     @staticmethod
     def init_app(app):
         pass
@@ -50,8 +49,6 @@ class Config:
 
     QUEUE_SCHEDULE = {
     }
-
-
 
 class DevelopmentConfig(Config):
     DEBUG       = True
@@ -76,6 +73,9 @@ class ProductionConfig(Config):
 
     REDIS_URL = os.environ.get('REDIS_URL')
 
+#------------------------------------------------------------------------------
+# Configs
+#------------------------------------------------------------------------------
 config = {
     'default': DevelopmentConfig,
 

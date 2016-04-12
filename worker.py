@@ -40,20 +40,20 @@ def main(argv=sys.argv[1:]):
         process.join()
 
 def scheduler(debug=False):
-    from app import create_app, queue
+    from app import create_app, queue_instance
 
     app = create_app(os.environ.get('CONFIG'))
-    print('RQ scheduler started')
+    print('[LEXONEXO] RQ scheduler started')
     with app.app_context():
-        scheduler = queue.get_scheduler()
+        scheduler = queue_instance.get_scheduler()
         scheduler.run()
 
 def worker(listen=(), debug=True):
-    from app import create_app, queue
+    from app import create_app, queue_instance
 
     app = create_app(os.environ.get('CONFIG'))
     with app.app_context():
-        worker = queue.get_worker(listen=listen)
+        worker = queue_instance.get_worker(listen=listen)
         worker.work()
 
 if __name__ == '__main__':
