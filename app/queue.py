@@ -5,7 +5,7 @@ from redis import StrictRedis
 from datetime import datetime, timedelta
 
 from rq import Worker
-from rq import Queue as RQ
+from rq import Queue as QueueType
 
 # default job timeout; one day in seconds
 ONE_DAY = 86400
@@ -28,18 +28,18 @@ class Queue(object):
             app.config['REDIS_URL']
         )
 
-    def get_queue_name(self, job):
-        return self.config['routes'].get(job, self.config['default_queue'])
+    def get_queue_name(self, job_name):
+        return self.config['routes'].get(job_name, self.config['default_queue'])
 
-    def add_to_queue(self, job, args=(), kwargs={}, **opts):
+    def add_to_queue(self, job_name, args=(), kwargs={}, **opts):
         queue =\
-            RQ(
-                self.get_queue_name(job),
+            QueueType(
+                self.get_queue_name(job_name),
                 connection = self.connection
             )
 
         return queue.enqueue_call(
-            job,
+            job_name,
             args = args,
             kwargs = kwargs,
             result_ttl = 0,
@@ -47,16 +47,16 @@ class Queue(object):
             **opts
         )
 
-    def apply(self, job, args=(), kwargs={}, **opts):
+    def apply(self, job_name, args=(), kwargs={}, **opts):
         queue =\
-            RQ(
-                self.get_queue_name(job),
+            QueueType(
+                self.get_queue_name(job_name),
                 connection = self.connection,
                 async = False
             )
 
         return queue.enqueue_call(
-            job,
+            job_name,
             args = args,
             kwargs = kwargs,
             result_ttl = 0,
@@ -69,13 +69,13 @@ class Queue(object):
             @wraps(function)
             def inner(*args, **kwargs):
                 try:
-                    rv = function(*args, **kwargs)
+                    return_value = function(*args, **kwargs)
                 except:
                     self.db.session.rollback()
                     raise
                 else:
                     self.db.session.commit()
-                    return rv
+                    return return_value
             return inner
         return wrapped
 
@@ -88,7 +88,7 @@ class Queue(object):
                 # interval = interval
             )
 
-        for job, job_config in self.config['schedule'].items():
+        for job_name, job_config in self.config['schedule'].items():
             scheduler.add(job, **job_config)
         return scheduler
 
@@ -102,7 +102,7 @@ class Queue(object):
 
         return Worker(
             [
-                RQ(k, connection = self.connection)
+                QueueType(k, connection = self.connection)
                 for k in listen
             ],
             # exception_handlers = exception_handlers,
@@ -139,10 +139,10 @@ class Scheduler(object):
 
         return next_run
 
-    def add(self, job, job_last_run):
+    def add(self, job_name, job_last_run):
         next_run = get_next_run(job_last_run)
         print('Scheduled for ' + next_run)
-        self.connection.zadd(self.schedule_key, next_run, job)
+        self.connection.zadd(self.schedule_key, next_run, job_name)
 
     def run(self):
         # Find jobs scheduled in the future
@@ -156,11 +156,11 @@ class Scheduler(object):
                     )
                 )
 
-            for job, job_config in self.schedule.items():
-                if job in pending:
+            for job_name, job_config in self.schedule.items():
+                if job_name in pending:
                     continue
                 timestamp = datetime.now() + timedelta(seconds = job_config['seconds'])
-                self.connection.zadd(self.schedule_key, timestamp, job)
-                self.queue.add_to_queue(job)
+                self.connection.zadd(self.schedule_key, timestamp, job_name)
+                self.queue.add_to_queue(job_name)
 
         # sleep(self.interval)

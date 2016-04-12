@@ -4,12 +4,17 @@ from flask.ext.bootstrap import Bootstrap
 from flask.ext.login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
+
 from config import config
 
 #------------------------------------------------------------------------------
 # Automated task queue
 #------------------------------------------------------------------------------
 from app.queue import Queue
+from flask_redis import Redis
+
+redis = Redis()
+#------------------------------------------------------------------------------
 
 bootstrap = Bootstrap()
 
@@ -18,7 +23,7 @@ login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
-queue = Queue()
+queue_instance = Queue()
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -37,7 +42,8 @@ def create_app(config_name):
 #------------------------------------------------------------------------------
     # Automated task queue
 #------------------------------------------------------------------------------
-    queue.init_app(app, db)
+    redis.init_app(app)
+    queue_instance.init_app(app, db)
 
 #------------------------------------------------------------------------------
     # SSLify

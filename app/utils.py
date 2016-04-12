@@ -3,6 +3,25 @@ from contextlib import contextmanager
 from random import random
 from time import sleep
 
+#------------------------------------------------------------------------------
+# For use w/`import_submodules()`
+#------------------------------------------------------------------------------
+import pkgutil
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# `import_submodules()`
+#------------------------------------------------------------------------------
+def import_submodules(context, root_module, path):
+    for loader, name, _ in pkgutil.walk_packages(path, root_module + '.'):
+        module = loader.find_module(name).load_module(name)
+        pkg_names = getattr(module, '__all__', None)
+        for k, v in vars(module).items():
+            if not k.startswith('_') and (pkg_names is None or k in pkg_names):
+                context[k] = v
+        context[name] = module
+#------------------------------------------------------------------------------
+
 DEFAULT_LOCK_TIMEOUT = 5
 
 class UnableToLockException(Exception):
@@ -46,3 +65,5 @@ def lock(conn, lock_key, timeout = DEFAULT_LOCK_TIMEOUT, expire = None, nowait =
             conn.delete(lock_key)
         except:
             print("Unanticipated exception occured")
+
+
