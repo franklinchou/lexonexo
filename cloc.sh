@@ -1,2 +1,2 @@
-#! /bin/bash
+#! /bin/sh
 cloc ./ --exclude-dir=venv,tests,migrations

@@ -84,8 +84,7 @@ class Queue(object):
         scheduler =\
             Scheduler(
                 connection = self.connection,
-                queue = self,
-                # interval = interval
+                queue = self
             )
 
         for job_name, job_config in self.config['schedule'].items():

@@ -1,3 +1,4 @@
+# Start redis
 redis-server sched/var/redis/redis.conf
 
 # to shutdown, issue:

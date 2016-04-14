@@ -27,10 +27,14 @@ class Runner(object):
 
     def __init__(self, la_username, la_password):
 
+        from config import basedir as proj_dir
+        import os
+
         self.la_username = la_username
         self.la_password = la_password
 
         self.wd = webdriver.PhantomJS(
+            service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver'),
             service_args = [
                 '--ssl-protocol=any',
                 '--ignore-ssl-errors=true'

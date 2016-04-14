@@ -9,7 +9,7 @@ from flask.ext.login import login_user,\
     login_required
 
 from app import db
-from app import queue
+from app import queue_instance
 
 from . import auth
 from .forms import LoginForm, RegistrationForm
@@ -78,7 +78,7 @@ def register():
             db.session.add(user)
 
         # Once registered add user to queue
-        queue.add_to_queue('app.jobs.execute_task', user.id)
+        queue_instance.add_to_queue('app.jobs.execute_task', user.id)
 
         return redirect(url_for('auth.register_success'))
 

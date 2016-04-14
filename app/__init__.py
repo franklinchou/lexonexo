@@ -4,7 +4,6 @@ from flask.ext.bootstrap import Bootstrap
 from flask.ext.login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-
 from config import config
 
 #------------------------------------------------------------------------------

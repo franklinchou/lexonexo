@@ -1,6 +1,6 @@
 import os
 
-from flask.ext.sqlalchemy import SQLAlchemy
+# from flask.ext.sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(
     os.path.dirname(__file__)

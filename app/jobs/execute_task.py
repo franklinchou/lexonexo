@@ -2,6 +2,7 @@
 
 # from . import job
 
+
 from app import queue_instance,\
     redis,\
     db
@@ -9,6 +10,7 @@ from app import queue_instance,\
 from ..models import User,\
     TaskStatus,\
     Task
+
 
 from ..main.runner import Runner
 
@@ -21,6 +23,7 @@ from datetime import datetime
 '''
 @queue_instance.job()
 def execute_lnq(user_id):
+    print('reached')
     with lock(redis, user_id):
         user = User.query.get(user_id)
         task = Task.query.get(user.task_id)
@@ -43,7 +46,6 @@ def execute_lnq(user_id):
     # Run task
 #------------------------------------------------------------------------------
         # Can I piggy back off the context created with the lock util?
-        print('reached')
         with Runner(user.la_username, user.la_password_encrypted) as r:
             r.login()
             r.query()
