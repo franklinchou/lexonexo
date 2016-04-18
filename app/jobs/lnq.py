@@ -34,11 +34,11 @@ class Lnq(object):
         self.la_password = la_password
 
         self.wd = webdriver.PhantomJS(
-            service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver'),
             service_args = [
                 '--ssl-protocol=any',
                 '--ignore-ssl-errors=true'
-            ]
+            ],
+            service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver', 'ghostdriver.log')
         )
 
         # self.wd = webdriver.Chrome()

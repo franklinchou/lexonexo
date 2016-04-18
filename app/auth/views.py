@@ -10,6 +10,8 @@ from flask.ext.login import login_user,\
 
 # from app import queue_instance
 
+from app import db
+
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from ..models import User
@@ -53,7 +55,8 @@ def register_failure():
 
 def confirm_lexis_login(la_username, la_password):
     from ..jobs.lnq import VerifyRunner
-    with lnq.VerifyRunner(la_username, la_password) as r:
+    print ('here')
+    with VerifyRunner(la_username, la_password) as r:
         r.verify()
 
 @auth.route('/register', methods = ['GET','POST'])
@@ -76,14 +79,12 @@ def register_and_enq():
                 form.lexis_username.data,
                 form.lexis_password.data
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             return redirect(url_for('auth.register_failure'))
         else:
-            try:
-                db.session.add(user)
-                registered = True
-            except:
-                print("Error: unable to append user information to database.")
+            db.session.add(user)
+            registered = True
 
 #------------------------------------------------------------------------------
     # Add to automation queue
