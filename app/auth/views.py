@@ -38,10 +38,6 @@ def logout():
     # flash()
     return redirect(url_for('public.index'))
 
-def confirm_lexis_login(la_username, la_password):
-    from ..jobs.lnq import VerifyRunner
-    with VerifyRunner(la_username, la_password) as r:
-        r.verify()
 
 @auth.route('/regd')
 def register_success():
@@ -54,6 +50,11 @@ def register_failure():
     return render_template(
         'auth/register_failure.html'
     )
+
+def confirm_lexis_login(la_username, la_password):
+    from ..jobs.lnq import VerifyRunner
+    with lnq.VerifyRunner(la_username, la_password) as r:
+        r.verify()
 
 @auth.route('/register', methods = ['GET','POST'])
 def register_and_enq():
