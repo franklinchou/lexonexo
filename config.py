@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 
 # from flask.ext.sqlalchemy import SQLAlchemy
@@ -10,7 +12,7 @@ class Config:
     SECRET_KEY          = os.environ.get('SECRET_KEY')
     # WTF_CSRF_ENABLED    = True
 
-    PROJ_NAME           = 'Lexo Nexo'
+    PROJ_NAME           = 'Lexo\u00A0Nexo'
 
 #------------------------------------------------------------------------------
 # Lexis specific

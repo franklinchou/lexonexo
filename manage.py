@@ -12,7 +12,7 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from app import create_app, db
 from app.queue import Queue
 
-from app.main.runner import Runner
+from app.jobs.lnq import Lnq
 from datetime import datetime
 
 
@@ -71,7 +71,7 @@ class Force(Command):
         elif (force_all == 'true'):
             # WARNING: This is HIGHLY unoptimized; if something breaks, check here first
             for u in db.session.query(User):
-                with Runner(u.la_username, u.la_password_encrypted) as r:
+                with Lnq(u.la_username, u.la_password_encrypted) as r:
                     r.login()
                     r.query()
                     if (r.passed == True):
@@ -79,7 +79,7 @@ class Force(Command):
         elif user_id:
             # This command may be vulnerable to an injection.
             u = User.query.filter_by(id=user_id).first()
-            with Runner(u.la_username, u.la_password_encrypted) as r:
+            with Lnq(u.la_username, u.la_password_encrypted) as r:
                 r.login()
                 r.query()
                 if (r.passed == True):

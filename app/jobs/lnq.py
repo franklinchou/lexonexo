@@ -23,7 +23,7 @@ submit_id       = 'signInSbmtBtn'
 
 #------------------------------------------------------------------------------
 
-class Runner(object):
+class Lnq(object):
 
     def __init__(self, la_username, la_password):
 
@@ -146,11 +146,19 @@ class Runner(object):
         self.passed = True
         # return self.passed
 
+#------------------------------------------------------------------------------
+    # Access point
+#------------------------------------------------------------------------------
+    def login_query(self):
+        self.login()
+        self.query()
+#------------------------------------------------------------------------------
+
     def __exit__(self, exc_type, exc_value, traceback):
         # self.wd.save_screenshot('out.png')
         self.wd.quit()
 
-class VerifyRunner(Runner):
+class VerifyRunner(Lnq):
 
     # VerifyRunner accepts plaintext LA username & password for use
     # on registration.

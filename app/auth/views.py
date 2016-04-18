@@ -8,7 +8,6 @@ from flask.ext.login import login_user,\
     logout_user,\
     login_required
 
-from app import db
 from app import queue_instance
 
 from . import auth
@@ -78,7 +77,15 @@ def register():
             db.session.add(user)
 
         # Once registered add user to queue
-        queue_instance.add_to_queue('app.jobs.execute_task', user.id)
+        with Runner(user.la_username, user.la_password_encrypted) as r:
+            job =\
+                queue_instance.enqueue_call(
+                    func=r.login_query
+                )
+
+            print(job.get_id())
+            if (r.passed == True):
+                user.last_run = datetime.utcnow()
 
         return redirect(url_for('auth.register_success'))
 

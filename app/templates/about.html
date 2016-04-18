@@ -13,34 +13,42 @@
       <h1>About me</h1>
     </div>
 
-    <blockquote>
-      <p>Automate all the things!</p>
-    </blockquote>
+    <p>
+      <style>
+        .tab {
+          padding-left: 4em;
+        }
+      </style>
+      <blockquote>
+        Automate all the things!
+        <div class="text-muted tab">-- Franklin Chou (age: 10)</div>
+      </blockquote>
+    </p>
 
     <p>I'm Franklin Chou. I'm a 3L at Seton Hall Law School. I started developing software in my
     late teens to automate boring stuff. The human mind is immensely powerful. But it gets bored
     easily and when it gets bored it makes mistakes. So I thought: Why not leave the boring stuff
     to machines? Many years later, I find that there is still a lot of stuff that needs automation.
-    </p>
 
-    <p>To further my goal of world automation I'm currently learning ES6. I'm still learning C, Java
-    and Python. I do most of my development in Arch Linux.
+    {{ config.PROJ_NAME }} is just one attempt to solve the automation problem.
     </p>
 
     <div class="page-header">
       <h1>Colophon</h1>
     </div>
 
-    <p>Lexomatic is built on the Flask web application microframework. Lexomatic talks to
-    databases using SQLAlchemy. Web forms are rendered through WTForm. And database storage is
-    provided by SQLite.</p>
+    <p>{{ config.PROJ_NAME }} is built on the Flask web application microframework. {{ config.PROJ_NAME }} 
+    talks to databases using SQLAlchemy. And database storage is provided by postgreSQL.
+    Asynchronous job queueing is provided by Redis, RQ and rq-scheduler.</p>
 
-    <p>The heart of Lexomatic is in the Selenium web driver automation package. Selenium does all
-    the heavy lifting. From verifying Lexis logins to performing legal search queries, Lexomatic
-    loves Selenium!</p>
+    <p>The heart of {{ config.PROJ_NAME }} is in the Selenium web driver automation package. Selenium does all
+    the heavy lifting. From verifying Lexis logins to performing legal search queries, {{
+    config.PROJ_NAME }} &#x2764s Selenium!</p>
 
     <h2>There's always room for improvement:</h2>
-    <p>Concurrent database access is limited, mostly by the embedded nature of SQLite.</p>
+    <p>The wonderful folks at <a href="http://heroku.com">Heroku</a>  provide the infrastructure
+    to make {{ config.PROJ_NAME }} possible. Sometimes there are bottlenecks; but my control over
+    that is limited.</p>
 
     <h2>Except when there isn't...</h2>
     <p>Access to Lexis is done through passing of actual user login information. No
