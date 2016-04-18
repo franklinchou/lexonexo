@@ -14,11 +14,17 @@
       <h1>Oops!</h1>
     </div>
 
-    <p>Uh oh. It looks like an internal server error occurred. Try <a href="{{
-      url_for('auth.register') }}">again</a> in a few minutes.</p>
+    <p>Uh oh. We were unable to verify your Lexis Advance account. Usually this happens when your
+    Lexis usename/password combination was incorrectly entered. Make sure you entered the right
+    stuff and <a href="{{ url_for('auth.register') }}">try again</a> in a few minutes.<p>
+
+    <p>If you're positive your Lexis credentials are correct, there might be an internal server
+    issue. In that case, wait a few minutes and try again.</p>
 
   </div>
 
   <div class="col-sm-3"></div>
+
+</div>
 
 {% endblock %}

@@ -56,7 +56,11 @@ def register_failure():
     )
 
 @auth.route('/register', methods = ['GET','POST'])
-def register():
+def register_and_enq():
+    '''
+        Register user and enqueue in task list
+    '''
+    registered = False
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
@@ -74,18 +78,18 @@ def register():
         except Exception:
             return redirect(url_for('auth.register_failure'))
         else:
-            db.session.add(user)
+            try:
+                db.session.add(user)
+                registered = True
+            except:
+                print("Error: unable to append user information to database.")
 
-        # Once registered add user to queue
-        with Runner(user.la_username, user.la_password_encrypted) as r:
-            job =\
-                queue_instance.enqueue_call(
-                    func=r.login_query
-                )
-
-            print(job.get_id())
-            if (r.passed == True):
-                user.last_run = datetime.utcnow()
+#------------------------------------------------------------------------------
+    # Add to automation queue
+#------------------------------------------------------------------------------
+    if registered is True:
+        pass
+#------------------------------------------------------------------------------
 
         return redirect(url_for('auth.register_success'))
 

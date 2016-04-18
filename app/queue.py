@@ -1,6 +1,7 @@
 from redis import StrictRedis
 
 from rq import Worker
+from rq_scheduler import Scheduler
 
 from rq import Queue as QT
 
@@ -26,3 +27,7 @@ class Queue(object):
             ],
             connection = self.cxn,
         )
+
+    def get_scheduler(self, interval = None):
+        scheduler = Scheduler(connection = self.cxn)
+        return scheduler
