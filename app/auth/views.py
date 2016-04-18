@@ -39,7 +39,7 @@ def logout():
     return redirect(url_for('public.index'))
 
 def confirm_lexis_login(la_username, la_password):
-    from ..main.runner import VerifyRunner
+    from ..jobs.lnq import VerifyRunner
     with VerifyRunner(la_username, la_password) as r:
         r.verify()
 
