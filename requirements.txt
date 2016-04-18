@@ -2,15 +2,18 @@ alembic==0.8.4
 amqp==1.4.9
 anyjson==0.3.3
 argh==0.26.1
+arrow==0.7.0
 billiard==3.3.0.22
 click==6.3
 croniter==0.3.12
 crypto==1.4.1
+dill==0.2.5
 dominate==2.1.16
 Flask==0.10.1
 Flask-Bootstrap==3.3.5.7
 Flask-Login==0.3.2
 Flask-Migrate==1.7.0
+Flask-Redis==0.1.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 Flask-SSLify==0.1.5
@@ -32,7 +35,7 @@ PyYAML==3.11
 redis==2.10.5
 requests==2.9.1
 rq==0.5.6
-rq-scheduler==0.6.0
+rq-dashboard==0.3.6
 selenium==2.52.0
 shellescape==3.4.1
 six==1.10.0

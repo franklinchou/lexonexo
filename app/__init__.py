@@ -10,7 +10,7 @@ from config import config
 # Automated task queue
 #------------------------------------------------------------------------------
 from app.queue import Queue
-from flask_redis import Redis
+from flask.ext.redis import Redis
 
 redis = Redis()
 queue_instance = Queue()

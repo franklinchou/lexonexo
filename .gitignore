@@ -13,7 +13,7 @@ app/main/dep/*
 app/templates/t_metrics.html
 
 #### scheduler
-sched/var/redis/*
+var/redis/*
 # Do not ignore redis configuration
 !sched/var/redis/redis.conf
 
