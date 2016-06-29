@@ -1,14 +1,18 @@
 from . import main
 
-from app.jobs import lnq
-
 from ..models import User
 
 from flask import render_template,\
     current_app
 
-from flask.ext.login import login_required,\
+from flask_login import login_required,\
     current_user
+
+#------------------------------------------------------------------------------
+# Automated queueing
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 
 @main.route('/ran')
 @login_required

@@ -1,18 +1,17 @@
-#! /usr/bin/python3.5
+#! /usr/bin/python3.5.1
 
 import os
 
-from flask.ext.script import Manager,\
+from flask_script import Manager,\
     Shell,\
     Command,\
     Option
 
-from flask.ext.migrate import Migrate, MigrateCommand
+from flask_migrate import Migrate, MigrateCommand
 
 from app import create_app, db
-from app.queue import Queue
 
-from app.jobs.lnq import Lnq
+# from app.jobs.lnq import Lnq
 from datetime import datetime
 
 
@@ -30,7 +29,6 @@ def make_shell_context():
         app = app,
         db = db,
         User = User,
-        queue = Queue,
     )
 
 manager.add_command(

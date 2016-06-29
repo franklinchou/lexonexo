@@ -1,4 +1,4 @@
-from flask.ext.login import UserMixin
+from flask_login import UserMixin
 from flask import current_app
 
 from werkzeug.security import generate_password_hash,\

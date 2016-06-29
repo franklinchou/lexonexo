@@ -2,6 +2,11 @@
 .env
 venv/*
 
+### deprecated automation experiments
+custom_queue.py
+worker.py
+
+
 ### database
 database/*
 # migrations/*

@@ -1,17 +1,21 @@
+'''
+    Revision no. 2
+'''
+
+from redis import StrictRedis
+from rq import Worker
+
+from app import create_app, q
+
 import os
-
-from app import create_app
-from app import queue_instance
-
-# from rq import Worker
 
 def worker():
     listen = ['default']
 
-    a = create_app(os.environ.get('CONFIG'))
+    app = create_app(os.environ.get('CONFIG'))
 
-    with a.app_context():
-        worker = queue_instance.get_worker(listen = listen)
+    with app.app_context():
+        worker = q.get_worker(listen=listen)
         worker.work()
 
 if __name__ == '__main__':
