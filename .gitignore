@@ -17,10 +17,16 @@ tests/*
 app/main/dep/*
 app/templates/t_metrics.html
 
-#### var
-var/redis/data
+#### scheduler
+var/redis/*
+!var/
+!var/ghostdriver
+!var/ghostdriver/ghostdriver.log
+# Do not ignore redis configuration
+!sched/var/redis/redis.conf
 
 # Log files
+*.log
 out.png
 
 # Byte-compiled / optimized / DLL files
