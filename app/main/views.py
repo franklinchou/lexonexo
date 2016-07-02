@@ -1,5 +1,7 @@
 from . import main
 
+from app.jobs import lnq
+
 from ..models import User
 
 from flask import render_template,\
@@ -7,12 +9,6 @@ from flask import render_template,\
 
 from flask_login import login_required,\
     current_user
-
-#------------------------------------------------------------------------------
-# Automated queueing
-#------------------------------------------------------------------------------
-
-#------------------------------------------------------------------------------
 
 @main.route('/ran')
 @login_required

@@ -2,6 +2,8 @@
 
 import os
 
+# from flask.ext.sqlalchemy import SQLAlchemy
+
 basedir = os.path.abspath(
     os.path.dirname(__file__)
 )
@@ -36,6 +38,19 @@ class Config:
 #------------------------------------------------------------------------------
 # Task automation, trial 1, April 2016
 #------------------------------------------------------------------------------
+
+    QUEUES = [
+        'app.tasks',
+    ]
+
+    QUEUE_DEFAULT = 'app.tasks'
+
+    QUEUE_ROUTES = {
+        'app.jobs.execute_task' : 'app.tasks',
+    }
+
+    QUEUE_SCHEDULE = {
+    }
 
 class DevelopmentConfig(Config):
     DEBUG       = True

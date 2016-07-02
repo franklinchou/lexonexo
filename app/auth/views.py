@@ -86,13 +86,6 @@ def register_and_enq():
             db.session.add(user)
             registered = True
 
-#------------------------------------------------------------------------------
-    # Add to automation queue
-#------------------------------------------------------------------------------
-    if registered is True:
-        pass
-#------------------------------------------------------------------------------
-
         return redirect(url_for('auth.register_success'))
 
     return render_template(
