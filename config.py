@@ -14,43 +14,14 @@ class Config:
 
     PROJ_NAME           = 'Lexo\u00A0Nexo'
 
-#------------------------------------------------------------------------------
-# Lexis specific
-#------------------------------------------------------------------------------
-
-    LEXIS_BASE_URL      = 'https://advance.lexis.com'
-    LEXIS_LOGIN_TARGET  = 'https://signin.lexisnexis.com/lnaccess/app/signin/aci/la'
-
-    LEXIS_QUERY         = '88 NJ 529'
-    LEXIS_QUERY_CHECK   = LEXIS_QUERY.replace(" ", "+")
-
-    LEXIS_VAULT_KEY     = os.environ.get('LEXIS_VAULT_KEY')
-
-#------------------------------------------------------------------------------
-
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
+
+    LEXIS_VAULT_KEY     = os.environ.get('LEXIS_VAULT_KEY')
 
     @staticmethod
     def init_app(app):
         pass
-
-#------------------------------------------------------------------------------
-# Task automation, trial 1, April 2016
-#------------------------------------------------------------------------------
-
-    QUEUES = [
-        'app.tasks',
-    ]
-
-    QUEUE_DEFAULT = 'app.tasks'
-
-    QUEUE_ROUTES = {
-        'app.jobs.execute_task' : 'app.tasks',
-    }
-
-    QUEUE_SCHEDULE = {
-    }
 
 class DevelopmentConfig(Config):
     DEBUG       = True
@@ -62,7 +33,8 @@ class DevelopmentConfig(Config):
     DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
-    REDIS_URL = 'localhost:6379'
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 class ProductionConfig(Config):

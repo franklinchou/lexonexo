@@ -126,6 +126,15 @@ function __setvars {
 
     while IFS='=' read -r key value; do
         if [ -n "${key}" ]; then
+
+            # Get last character in string
+            i=$((${#value}-1))
+
+            # If last character in string is `#` ignore variable
+            if [ "$(echo "${value:$i:1}")" == "#" ]; then
+                printf "\t${Red}%s${Color_Off}\t%s\n" '[SKIP]' $key
+                continue
+            fi
             export "$key""=""$value"
             printf "\t${Green}%s${Color_Off}\t%s\n" '[OK]' $key
         else

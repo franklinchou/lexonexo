@@ -3,36 +3,69 @@ Design pattern using function decorators abandoned, 22 FEB 2016.
 Resorting to procedural type design pattern.
 Mark for refactor.
 
+Refactored for task automation, 02 JUL 2016.
+
 Franklin Chou
 """
+
+import os
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-from flask import current_app
-
 from ..models import User
+
+#------------------------------------------------------------------------------
+# Automated task queue
+#------------------------------------------------------------------------------
+# from app import celery
+from celery import Celery
+from celery import Task
+#------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
 # Login specific CSS selectors
 #------------------------------------------------------------------------------
-
 user_id         = 'userid'
 password_id     = 'password'
 submit_id       = 'signInSbmtBtn'
-
 #------------------------------------------------------------------------------
 
-class Lnq(object):
+celery = Celery('tasks', broker='redis://localhost:6379')
 
-    def __init__(self, la_username, la_password):
+lnq_config = {
+    'LEXIS_BASE_URL'        : 'https://advance.lexis.com',
+    'LEXIS_LOGIN_TARGET'    : 'https://signin.lexisnexis.com/lnaccess/app/signin/aci/la',
+    'LEXIS_QUERY'           : '88 NJ 529',
+    # 'LEXIS_VAULT_KEY'       : os.environ.get('LEXIS_VAULT_KEY')
+}
 
-        from config import basedir as proj_dir
-        import os
+class Lnq(Task):
 
+    def force(self, la_username, la_password):
+        self.la_username = la_username
+        self.la_password = la_password
+        self.launch_webdriver()
+        self.login()
+        self.query()
+        self.destroy()
+
+    def run(self, la_username, la_password, *args, **kwargs):
+        '''
+            Accepts Lexis Advance username & password.
+            Decryption/decode to be done by calling function.
+        '''
         self.la_username = la_username
         self.la_password = la_password
 
+        self.launch_webdriver()
+        self.login()
+        # self.overlay()
+        self.query()
+        self.destroy()
+
+    def launch_webdriver(self):
+        from config import basedir as proj_dir
         self.wd = webdriver.PhantomJS(
             service_args = [
                 '--ssl-protocol=any',
@@ -45,24 +78,16 @@ class Lnq(object):
 
         self.wd.set_window_size(1600, 900)
 
-        self.login_passed = False
-
-        self.login_target = current_app.config['LEXIS_LOGIN_TARGET']
-        self.base_target  = current_app.config['LEXIS_BASE_URL']
-
-        self.passed = False
-
-    def __enter__(self):
+        self.login_target = lnq_config['LEXIS_LOGIN_TARGET']
+        self.base_target  = lnq_config['LEXIS_BASE_URL']
 
         # Land webdriver on Lexis webpage
-
         if (self.wd.current_url != self.login_target.strip("\'")):
            self.wd.get(self.base_target)
 
         return self
 
     def login(self):
-
         try:
             user_field  = self.wd.find_element_by_id(user_id)
             pwd_field   = self.wd.find_element_by_id(password_id)
@@ -71,35 +96,27 @@ class Lnq(object):
             pass
 
         user_field.send_keys(self.la_username)
-
-#------------------------------------------------------------------------------
-        # Decrypt and enter user's LA password
-#------------------------------------------------------------------------------
-
-        user = User.query.filter_by(la_username=self.la_username).first()
-        if user is not None:
-            pwd_field.send_keys(user.use_la_password().decode('ascii'))
-
-#------------------------------------------------------------------------------
+        pwd_field.send_keys(self.la_password)
 
         submit_btn.click()
 
-        if (self.login_target in self.wd.current_url):
-            self.login_passed = True
+        if (lnq_config['LEXIS_LOGIN_TARGET'] in self.wd.current_url):
+            pass
+        else:
+            pass
+            # raise Exception
 
+
+#------------------------------------------------------------------------------
+    # Overlay detection
+
+    # The need to deal w/overlay has been obviated (by using phantomjs); 
+    #   `query()` will directly interact w/the search submit element.
+#------------------------------------------------------------------------------
     def overlay(self):
-
-        # The need to deal with the overlay is obviated; `query()` will
-        # directly interact with the search submit element.
-
-#------------------------------------------------------------------------------
-        # Overlay detection
-#------------------------------------------------------------------------------
 
         overlay_xpath = "//aside[@role='dialog']"
         overlay_close = "//input[@value='Close']"
-
-#------------------------------------------------------------------------------
 
         try:
             la_overlay = self.wd.find_element_by_xpath()
@@ -111,18 +128,17 @@ class Lnq(object):
             la_overlay_close.click()
 
         # verify click success
+#------------------------------------------------------------------------------
 
     def query(self):
 
 #------------------------------------------------------------------------------
         # Post login verification selectors
 #------------------------------------------------------------------------------
-
         # Unicode `registered` sign following Advance?
         header_xpath = "h2[@class='pagewrapper' and normalize-space(text())='Lexis Advance Home']"
 
         searchbar_id = 'searchTerms'
-
 #------------------------------------------------------------------------------
 
         try:
@@ -136,7 +152,7 @@ class Lnq(object):
         except NoSuchElementException:
             pass
         else:
-            searchbar.send_keys(current_app.config['LEXIS_QUERY'])
+            searchbar.send_keys(lnq_config['LEXIS_QUERY'])
 
         try:
             self.wd.execute_async_script("document.getElementById('mainSearch').click()")
@@ -146,25 +162,21 @@ class Lnq(object):
         self.passed = True
         # return self.passed
 
-#------------------------------------------------------------------------------
-    # Access point
-#------------------------------------------------------------------------------
-    def login_query(self):
-        self.login()
-        self.query()
-#------------------------------------------------------------------------------
-
-    def __exit__(self, exc_type, exc_value, traceback):
+    def destroy(self):
         # self.wd.save_screenshot('out.png')
         self.wd.quit()
+
 
 class VerifyRunner(Lnq):
 
     # VerifyRunner accepts plaintext LA username & password for use
     # on registration.
 
-    def __init__(self, la_username, la_password):
-        super().__init__(la_username, la_password)
+    def run(self, la_username, la_password, *args, **kwargs):
+        self.la_username = la_username
+        self.la_password = la_password
+        super().launch_webdriver()
+        self.verify()
 
     def verify(self):
 
@@ -182,7 +194,8 @@ class VerifyRunner(Lnq):
         pwd_field.send_keys(self.la_password)
         submit_btn.click()
 
-        if (self.base_target in self.wd.current_url):
+        if(lnq_config['LEXIS_BASE_URL'] in self.wd.current_url):
             self.login_passed = True
         else:
             raise Exception
+            # return False

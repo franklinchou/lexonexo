@@ -5,6 +5,8 @@ from . import public
 
 from ..models import User
 
+from app import db
+
 @public.route('/')
 def index():
     return render_template(
@@ -42,3 +44,22 @@ def source():
     return redirect(
         'https://github.com/franklinchou/lexonexo'
     )
+
+#------------------------------------------------------------------------------
+# Exposure for automated task queue testing
+#------------------------------------------------------------------------------
+@public.route('/test')
+def test_queue():
+    from app.jobs.lnq import Lnq
+
+    u = User.query.filter_by(id=20).first()
+
+    lnq = Lnq()
+    # lnq.delay(u.la_username, u.la_password_encrypted)
+    # lnq.delay(u.la_username, u.use_la_password().decode('ascii'))
+
+    lnq.delay(u.la_username, 'Fillmore234!!')
+    # lnq.force(u.la_username, 'Fillmore234!!')
+
+    return u.use_la_password()
+    # return u.la_password_encrypted

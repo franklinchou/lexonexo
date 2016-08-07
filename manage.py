@@ -31,7 +31,6 @@ def make_shell_context():
         app = app,
         db = db,
         User = User,
-        queue = Queue,
     )
 
 manager.add_command(

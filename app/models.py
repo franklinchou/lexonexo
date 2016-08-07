@@ -1,3 +1,13 @@
+#------------------------------------------------------------------------------
+# JUL 2016
+#
+# Unable to reliably implement two way encryption/encoding of Lexis passwords.
+#
+# THIS SECURITY FEATURE HAS BEEN ABANDONED.
+# In the event that the hosting site's database is breached, Lexis
+# username/password pairs stored with this application will be EXPOSED.
+#------------------------------------------------------------------------------
+
 from flask_login import UserMixin
 from flask import current_app
 
@@ -8,13 +18,16 @@ from datetime import datetime
 
 #------------------------------------------------------------------------------
 # Encryption
+#
+# JUL 2016
+# WARNING! FEATURE ABANDONED
 #------------------------------------------------------------------------------
 
-from Crypto import Random
-from Crypto.Cipher import AES
+# from Crypto import Random
+# from Crypto.Cipher import AES
 
-from binascii import hexlify
-from binascii import unhexlify
+# from binascii import hexlify
+# from binascii import unhexlify
 
 #------------------------------------------------------------------------------
 
@@ -37,7 +50,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
 
     la_username = db.Column(db.String(64), unique = True)
-    la_password_encrypted = db.Column(db.String(512))
+    la_password = db.Column(db.String(128))
+    # la_password_encrypted = db.Column(db.String(512))
+
     confirmed = db.Column(db.Boolean, default = False)
 
     last_run = db.Column(db.DateTime())
@@ -55,33 +70,33 @@ class User(UserMixin, db.Model):
 
 #------------------------------------------------------------------------------
     # Lexis password storage
+
+    # JUL 2016
+    # WARNING! FEATURE ABANDONED
 #------------------------------------------------------------------------------
 
-    @property
-    def la_password(self, la_password):
-        raise AttributeError("`la_password` is not a readable attribute")
+    # @property
+    # def la_password(self, la_password):
+    #    raise AttributeError("`la_password` is not a readable attribute")
 
 
-    # WARNING:
-    #   Anomaly in la_password usage on development server likely caused by
-    #     `strip()` function in development code. Refactor.
-    @la_password.setter
-    def la_password(self, la_password):
-        key = current_app.config['LEXIS_VAULT_KEY']
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(key.strip("\'"), AES.MODE_CFB, iv)
-        self.la_password_encrypted = hexlify(iv + cipher.encrypt(la_password))
+    # @la_password.setter
+    # def la_password(self, la_password):
+    #    key = current_app.config['LEXIS_VAULT_KEY']
+    #    iv = Random.new().read(AES.block_size)
+    #    cipher = AES.new(key.strip("\'"), AES.MODE_CFB, iv)
+    #    self.la_password_encrypted = hexlify(iv + cipher.encrypt(la_password))
 
-    def use_la_password(self):
-        key = current_app.config['LEXIS_VAULT_KEY']
-        encrypted = unhexlify(self.la_password_encrypted)
-        cipher = AES.new(key.strip("\'"), AES.MODE_CFB, encrypted[:AES.block_size])
-        return cipher.decrypt(encrypted)[AES.block_size:]
+    # def use_la_password(self):
+    #    key = current_app.config['LEXIS_VAULT_KEY']
+
+    #    print(self.la_password_encrypted)
+
+    #    encrypted_unhexd = unhexlify(self.la_password_encrypted)
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 
 #------------------------------------------------------------------------------
 # TASK STORAGE

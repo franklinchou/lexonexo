@@ -8,8 +8,6 @@ from flask_login import login_user,\
     logout_user,\
     login_required
 
-# from app import queue_instance
-
 from app import db
 
 from . import auth
@@ -54,17 +52,14 @@ def register_failure():
     )
 
 def confirm_lexis_login(la_username, la_password):
-    from ..jobs.lnq import VerifyRunner
-    print ('here')
-    with VerifyRunner(la_username, la_password) as r:
-        r.verify()
+    from app.jobs.lnq import VerifyRunner
+
+    # vr = VerifyRunner()
+    # vr.run(la_username, la_password)
+    # vr.delay(la_username, la_password)
 
 @auth.route('/register', methods = ['GET','POST'])
-def register_and_enq():
-    '''
-        Register user and enqueue in task list
-    '''
-    registered = False
+def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(
@@ -84,7 +79,6 @@ def register_and_enq():
             return redirect(url_for('auth.register_failure'))
         else:
             db.session.add(user)
-            registered = True
 
         return redirect(url_for('auth.register_success'))
 
