@@ -39,7 +39,7 @@
 
     <p>{{ config.PROJ_NAME }} is built on the Flask web application microframework. {{ config.PROJ_NAME }} 
     talks to databases using SQLAlchemy. And database storage is provided by postgreSQL.
-    Asynchronous job queueing is provided by Redis, RQ and rq-scheduler.</p>
+    Asynchronous job queueing is provided by Celery and Celerybeat.</p>
 
     <p>The heart of {{ config.PROJ_NAME }} is in the Selenium web driver automation package. Selenium does all
     the heavy lifting. From verifying Lexis logins to performing legal search queries, {{
@@ -52,8 +52,7 @@
 
     <h2>Except when there isn't...</h2>
     <p>Access to Lexis is done through passing of actual user login information. No
-    Lexis backend or RESTful API is available (AFAIK). Lexis credentials are encrypted to
-    mitigate security risks caused by storage of user information.</p>
+    Lexis backend or RESTful API is available (AFAIK). Lexis credentials are NOT encrypted.</p>
 
   </div>
 

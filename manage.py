@@ -58,6 +58,9 @@ class Force(Command):
     '''
         Force:
         Allows manual override of workers.
+
+        WARNING: This function is for testing/development only; do NOT use
+        in production.
     '''
 
     option_list = (
@@ -69,21 +72,17 @@ class Force(Command):
         if (force_all is None and user_id is None):
             print('ERROR: `force` function must be called using an argument')
         elif (force_all == 'true'):
-            # WARNING: This is HIGHLY unoptimized; if something breaks, check here first
             for u in db.session.query(User):
-                with Lnq(u.la_username, u.la_password_encrypted) as r:
-                    r.login()
-                    r.query()
-                    if (r.passed == True):
-                        u.last_run = datetime.utcnow()
-        elif user_id:
-            # This command may be vulnerable to an injection.
-            u = User.query.filter_by(id=user_id).first()
-            with Lnq(u.la_username, u.la_password_encrypted) as r:
-                r.login()
-                r.query()
-                if (r.passed == True):
+                lnq = Lnq()
+                lnq.delay(u.la_username, u.la_password)
+                if (lnq.passed == True):
                     u.last_run = datetime.utcnow()
+        elif user_id:
+            u = User.query.filter_by(id=user_id).first()
+            lnq = Lnq()
+            lnq.delay(u.la_username, u.la_password)
+            if (lnq.passed == True):
+                u.last_run = datetime.utcnow()
         else:
             print('Undefined option detected.')
 

@@ -6,8 +6,10 @@ venv/*
 database/*
 # migrations/*
 
+### tests/development
+app/jobs/lnq_test.py
 tests/*
-!tests/test*.py
+# !tests/test*.py
 
 app/main/dep/*
 app/templates/t_metrics.html

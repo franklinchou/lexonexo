@@ -2,7 +2,7 @@
 
 import os
 
-# from flask.ext.sqlalchemy import SQLAlchemy
+from celery.schedules import crontab
 
 basedir = os.path.abspath(
     os.path.dirname(__file__)
@@ -17,7 +17,17 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
 
-    LEXIS_VAULT_KEY     = os.environ.get('LEXIS_VAULT_KEY')
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+    CELERYBEAT_TIMEZONE = 'UTC'
+    CELERYBEAT_SCHEDULE = {
+        # Executes daily at 1AM
+        'query-every-morning' : {
+            'task' : 'app.jobs.lnq.query',
+            'schedule' : crontab(minute='*/1'),
+        },
+    }
 
     @staticmethod
     def init_app(app):
@@ -32,10 +42,6 @@ class DevelopmentConfig(Config):
     # Changed local database to mirror remote
     DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
-
-    CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
 
 class ProductionConfig(Config):
     DEBUG       = False

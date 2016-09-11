@@ -1,7 +1,6 @@
 """
 Design pattern using function decorators abandoned, 22 FEB 2016.
 Resorting to procedural type design pattern.
-Mark for refactor.
 
 Refactored for task automation, 02 JUL 2016.
 
@@ -13,14 +12,20 @@ import os
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
-from ..models import User
+# from ..models import User
 
 #------------------------------------------------------------------------------
 # Automated task queue
 #------------------------------------------------------------------------------
-# from app import celery
-from celery import Celery
-from celery import Task
+from celery import Task,\
+    states
+from celery.exceptions import Ignore
+from .. import celery
+
+@celery.task(name='app.jobs.lnq.query')
+def daily_query():
+    print('2+2')
+
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -31,8 +36,6 @@ password_id     = 'password'
 submit_id       = 'signInSbmtBtn'
 #------------------------------------------------------------------------------
 
-celery = Celery('tasks', broker='redis://localhost:6379')
-
 lnq_config = {
     'LEXIS_BASE_URL'        : 'https://advance.lexis.com',
     'LEXIS_LOGIN_TARGET'    : 'https://signin.lexisnexis.com/lnaccess/app/signin/aci/la',
@@ -40,32 +43,51 @@ lnq_config = {
     # 'LEXIS_VAULT_KEY'       : os.environ.get('LEXIS_VAULT_KEY')
 }
 
+# Set to 1 for debugging purposes, else set to 0
+MODE = 0
+
 class Lnq(Task):
 
     def force(self, la_username, la_password):
         self.la_username = la_username
         self.la_password = la_password
-        self.launch_webdriver()
-        self.login()
-        self.query()
-        self.destroy()
+
+        self.launch_webdriver(MODE)
+        try:
+            self.login()
+            self.query()
+            self.destroy()
+        except NoSuchElementException:
+            self.update_state(
+                state = states.FAILURE,
+                meta = 'FAILED TO COMPLETE QUERY'
+            )
+            raise Ignore()
 
     def run(self, la_username, la_password, *args, **kwargs):
         '''
             Accepts Lexis Advance username & password.
-            Decryption/decode to be done by calling function.
         '''
         self.la_username = la_username
         self.la_password = la_password
 
-        self.launch_webdriver()
-        self.login()
-        # self.overlay()
-        self.query()
-        self.destroy()
+        self.launch_webdriver(MODE)
 
-    def launch_webdriver(self):
+        try:
+            self.login()
+            # self.overlay()
+            self.query()
+            self.destroy()
+        except NoSuchElementException:
+            self.update_state(
+                state = states.FAILURE,
+                meta = 'FAILED TO COMPLETE QUERY'
+            )
+            raise Ignore()
+
+    def launch_webdriver(self, mode):
         from config import basedir as proj_dir
+
         self.wd = webdriver.PhantomJS(
             service_args = [
                 '--ssl-protocol=any',
@@ -74,7 +96,8 @@ class Lnq(Task):
             service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver', 'ghostdriver.log')
         )
 
-        # self.wd = webdriver.Chrome()
+        if mode == 1:
+            self.wd = webdriver.Chrome()
 
         self.wd.set_window_size(1600, 900)
 
@@ -93,24 +116,17 @@ class Lnq(Task):
             pwd_field   = self.wd.find_element_by_id(password_id)
             submit_btn  = self.wd.find_element_by_id(submit_id)
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException
 
         user_field.send_keys(self.la_username)
         pwd_field.send_keys(self.la_password)
 
         submit_btn.click()
 
-        if (lnq_config['LEXIS_LOGIN_TARGET'] in self.wd.current_url):
-            pass
-        else:
-            pass
-            # raise Exception
-
-
 #------------------------------------------------------------------------------
     # Overlay detection
 
-    # The need to deal w/overlay has been obviated (by using phantomjs); 
+    # The need to deal w/overlay has been obviated (by using phantomjs);
     #   `query()` will directly interact w/the search submit element.
 #------------------------------------------------------------------------------
     def overlay(self):
@@ -122,7 +138,7 @@ class Lnq(Task):
             la_overlay = self.wd.find_element_by_xpath()
             la_overlay_close = self.wd.find_element_by_xpath()
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException
 
         if (la_overlay is not None):
             la_overlay_close.click()
@@ -135,32 +151,27 @@ class Lnq(Task):
 #------------------------------------------------------------------------------
         # Post login verification selectors
 #------------------------------------------------------------------------------
-        # Unicode `registered` sign following Advance?
-        header_xpath = "h2[@class='pagewrapper' and normalize-space(text())='Lexis Advance Home']"
+        adv_search_xpath = "//button[@type='button' and normalize-space(text()) = 'Advanced Search']"
 
         searchbar_id = 'searchTerms'
 #------------------------------------------------------------------------------
 
         try:
-            # self.wd.find_element_by_xpath(header_xpath)
-            pass
+            self.wd.find_element_by_xpath(adv_search_xpath)
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException
 
         try:
             searchbar = self.wd.find_element_by_id(searchbar_id)
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException
         else:
             searchbar.send_keys(lnq_config['LEXIS_QUERY'])
 
         try:
             self.wd.execute_async_script("document.getElementById('mainSearch').click()")
         except:
-            pass
-
-        self.passed = True
-        # return self.passed
+            raise NoSuchElementException
 
     def destroy(self):
         # self.wd.save_screenshot('out.png')
@@ -175,27 +186,8 @@ class VerifyRunner(Lnq):
     def run(self, la_username, la_password, *args, **kwargs):
         self.la_username = la_username
         self.la_password = la_password
-        super().launch_webdriver()
+        super().launch_webdriver(MODE)
         self.verify()
 
     def verify(self):
-
-        # This duplicates much of the functionality found in the super class's
-        # `login()` function; should mark for refactor.
-
-        try:
-            user_field  = self.wd.find_element_by_id(user_id)
-            pwd_field   = self.wd.find_element_by_id(password_id)
-            submit_btn  = self.wd.find_element_by_id(submit_id)
-        except NoSuchElementException:
-            pass
-
-        user_field.send_keys(self.la_username)
-        pwd_field.send_keys(self.la_password)
-        submit_btn.click()
-
-        if(lnq_config['LEXIS_BASE_URL'] in self.wd.current_url):
-            self.login_passed = True
-        else:
-            raise Exception
-            # return False
+        super().login()
