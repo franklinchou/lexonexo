@@ -1,6 +1,13 @@
+#------------------------------------------------------------------------------
+# Franklin Chou
+#
+# REVISION 2
+#------------------------------------------------------------------------------
+
 from . import main
 
-from app.jobs import lnq
+# DEPRECATE
+# from app.jobs import lnq
 
 from ..models import User
 

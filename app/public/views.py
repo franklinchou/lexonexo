@@ -48,7 +48,7 @@ def source():
 #------------------------------------------------------------------------------
 # Exposure for automated task queue testing
 #------------------------------------------------------------------------------
-# @public.route('/test')
+@public.route('/test')
 def test_queue():
     from datetime import datetime
     from app.jobs.lnq import Lnq

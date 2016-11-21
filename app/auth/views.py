@@ -1,3 +1,7 @@
+#------------------------------------------------------------------------------
+# Franklin Chou
+#------------------------------------------------------------------------------
+
 from flask import render_template,\
     redirect,\
     request,\
@@ -8,11 +12,19 @@ from flask_login import login_user,\
     logout_user,\
     login_required
 
+from .forms import LoginForm,\
+    RegistrationForm
+
+from sqlalchemy.sql.expression import exists
+
 from app import db
+from app.jobs.task import get_points
+from app.jobs.automation_exception import InvalidLogin
+from app.jobs.automation_exception import InvalidLanding
 
 from . import auth
-from .forms import LoginForm, RegistrationForm
 from ..models import User
+from datetime import datetime
 
 @auth.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -51,12 +63,10 @@ def register_failure():
         'auth/register_failure.html'
     )
 
-def confirm_lexis_login(la_username, la_password):
-    from app.jobs.lnq import VerifyRunner
 
-    # vr = VerifyRunner()
-    # vr.run(la_username, la_password)
-    # vr.delay(la_username, la_password)
+#------------------------------------------------------------------------------
+# `last_run` insertion point
+#------------------------------------------------------------------------------
 
 @auth.route('/register', methods = ['GET','POST'])
 def register():
@@ -70,15 +80,17 @@ def register():
         )
 
         try:
-            confirm_lexis_login(
-                form.lexis_username.data,
-                form.lexis_password.data
-            )
-        except Exception as e:
-            print(e)
+            get_points(form.lexis_username.data, form.lexis_password.data)
+        except InvalidLogin as e:
             return redirect(url_for('auth.register_failure'))
+        except InvalidLanding as e:
+            # @TODO: Build page for general error
+            pass
         else:
+            user.last_run = datetime.now()
             db.session.add(user)
+            db.session.flush()
+            __verify_record__(user.id)
 
         return redirect(url_for('auth.register_success'))
 
@@ -86,3 +98,23 @@ def register():
         'auth/register.html',
         form = form
     )
+
+'''
+    Will verify that the record exists (by the auto generated unique id)
+    _AND_ attempts to determine that the `last_run` field has been appropriately set
+
+    Query as to whether this sort of verfication is necessary in production models.
+    Balance the cost of a database query versus the benefit of sanity checking an individualized record.
+'''
+def __verify_record__(user_id):
+    try:
+        (user_record, ), = db.session.query(
+                exists().where(User.id==user_id).where(User.last_run.isnot(None))
+        )
+        if user_record == False:
+            # @TODO: Build page for general error & log custom exception
+            raise Exception
+        # Persists change to database
+        db.session.commit()
+    except Exception as e:
+        raise

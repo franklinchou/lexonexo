@@ -21,11 +21,6 @@ from celery import Task,\
     states
 from celery.exceptions import Ignore
 from .. import celery
-
-@celery.task(name='app.jobs.lnq.query')
-def daily_query():
-    print('2+2')
-
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -44,7 +39,7 @@ lnq_config = {
 }
 
 # Set to 1 for debugging purposes, else set to 0
-MODE = 0
+MODE = 1
 
 class Lnq(Task):
 
