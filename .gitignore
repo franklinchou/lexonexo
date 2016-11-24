@@ -8,6 +8,7 @@ database/*
 
 ### tests/development
 app/jobs/lnq_test.py
+app/jobs/dep/*
 tests/*
 # !tests/test*.py
 
@@ -15,6 +16,7 @@ app/main/dep/*
 app/templates/t_metrics.html
 
 #### scheduler
+var/celery/celerybeat-scheduler
 var/redis/*
 !var/
 !var/ghostdriver
@@ -34,3 +36,5 @@ __pycache__/
 # C extensions
 *.so
 
+# development platform
+dev/*

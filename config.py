@@ -17,18 +17,6 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
 
-    CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-    CELERYBEAT_TIMEZONE = 'UTC'
-    CELERYBEAT_SCHEDULE = {
-        # Executes daily at 1AM
-        'query-every-morning' : {
-            'task' : 'app.jobs.lnq.query',
-            'schedule' : crontab(minute='*/1'),
-        },
-    }
-
     @staticmethod
     def init_app(app):
         pass

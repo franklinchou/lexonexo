@@ -13,24 +13,39 @@ from celery import Celery
 from .automation_exception import InvalidLanding
 from .automation_exception import InvalidLogin
 
+from datetime import datetime as DT
+from datetime import timedelta
+
+from app import db
+from app.models import User
+
 from socket import error as socket_error
 
 celery = Celery(__name__, broker='redis://localhost:6379/0')
+celery.config_from_object('celery_config')
 
 lnq_config = {
     'LEXIS_BASE_URL'    : "https://advance.lexis.com",
     'LEXIS_LOGIN_TARGET': "https://signin.lexisnexis.com/lnaccess/app/signin/aci/la"
 }
 
+
 @celery.task(name='tasks.run_outstanding_query')
-def oustanding_query():
+def run_outstanding_query():
+
     try:
-        time_threshold = DT.now() - timedelta(hours=2)
-        u = User.query.filter(User.last_run < time_threshold)
-        for record in u:
-            print(record)
+        # Search for all accounts where the query has not been run in 24 hours
+        users = User.query.filter(User.last_run < DT.now() - timedelta(days=1)).all()
+        if (len(users) != 0):
+            for user in users:
+                tasks.get_points.delay(user.la_username, user.la_password)
+                user.last_run = DT.now()
+            try:
+                db.session.commit()
+            except:
+                pass
     except:
-        raise
+        pass
 
 @celery.task(name='tasks.get_points')
 def get_points(username, password):

@@ -11,11 +11,14 @@ from config import config,\
 # Automated task queue
 #------------------------------------------------------------------------------
 from celery import Celery
+from celery.schedules import crontab
 #------------------------------------------------------------------------------
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
-celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
+
+# Create Celery object
+# celery = Celery(__name__)
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -32,8 +35,7 @@ def create_app(config_name):
 
     db.init_app(app)
 
-    # Create Celery object
-    celery.conf.update(app.config)
+    # celery.config_from_object('celery_config')
 
     bootstrap.init_app(app)
     login_manager.init_app(app)
@@ -45,7 +47,6 @@ def create_app(config_name):
     if not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify
         sslify = SSLify(app)
-#------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
     # attach routes
@@ -68,4 +69,3 @@ def create_app(config_name):
 
     return app
 #------------------------------------------------------------------------------
-

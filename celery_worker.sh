@@ -2,4 +2,4 @@
 
 # 20 NOV 2016
 
-celery -A app.jobs.task worker --loglevel=info
+celery -A app.jobs.tasks worker --loglevel=info

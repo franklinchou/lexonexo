@@ -18,7 +18,7 @@ from .forms import LoginForm,\
 from sqlalchemy.sql.expression import exists
 
 from app import db
-from app.jobs.task import get_points
+from app.jobs.tasks import get_points
 from app.jobs.automation_exception import InvalidLogin
 from app.jobs.automation_exception import InvalidLanding
 
