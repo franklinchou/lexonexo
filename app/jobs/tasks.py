@@ -19,9 +19,12 @@ from datetime import timedelta
 from app import db
 from app.models import User
 
+from config import Config
+
 from socket import error as socket_error
 
-celery = Celery(__name__, broker='redis://localhost:6379/0')
+# celery = Celery(__name__, broker='redis://localhost:6379/0')
+celery = Celery(__name__, broker=Config.REDIS_URL)
 celery.config_from_object('celery_config')
 
 lnq_config = {

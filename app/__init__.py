@@ -4,8 +4,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-from config import config,\
-    Config
+from config import config
 
 #------------------------------------------------------------------------------
 # Automated task queue

@@ -10,12 +10,14 @@ basedir = os.path.abspath(
 
 class Config:
     SECRET_KEY          = os.environ.get('SECRET_KEY')
-    # WTF_CSRF_ENABLED    = True
+    WTF_CSRF_ENABLED    = True
 
     PROJ_NAME           = 'Lexo\u00A0Nexo'
 
     SQLALCHEMY_COMMIT_ON_TEARDOWN   = True
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
+
+    REDIS_URL = os.environ.get('REDIS_URL').strip('\'')
 
     @staticmethod
     def init_app(app):
@@ -35,11 +37,9 @@ class ProductionConfig(Config):
     DEBUG       = False
     SSL_DISABLE = False
 
-    CSRF_ENABLED = True
+    WTF_CSRF_ENABLED = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-
-    REDIS_URL = os.environ.get('REDIS_URL')
 
 #------------------------------------------------------------------------------
 # Configs
