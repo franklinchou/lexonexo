@@ -1,4 +1,0 @@
-web: gunicorn manage:app --log-file=-
-
-# run worker & scheduler as single dyno
-celery_worker: celery -A app.jobs.tasks worker --beat --loglevel=info

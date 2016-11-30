@@ -1,1 +1,6 @@
-web: env > .env; honcho start -f Procfile.actual 2>&1
+web: gunicorn manage:app --log-file=-
+
+celery_beat: celery -A app.jobs.tasks worker --loglevel=info
+
+# scalable
+celery_worker: celery -A app.jobs.tasks beat --loglevel=info -s ./var/celery/celerybeat-schedule
