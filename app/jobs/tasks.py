@@ -22,6 +22,7 @@ from app import db
 from app.models import User
 
 from config import Config
+from config import config
 
 from socket import error as socket_error
 
