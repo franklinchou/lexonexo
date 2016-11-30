@@ -67,6 +67,7 @@ def get_points(username, password):
 
 def create_driver():
     driver = webdriver.PhantomJS(
+
         service_args = [
             '--ssl-protocol=any',
             '--ignore-ssl-errors=true'
