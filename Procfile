@@ -1,1 +1,1 @@
-web: gunicorn manage:app --log-file=-
+honcho start -f Procfile.actual 2>&1
