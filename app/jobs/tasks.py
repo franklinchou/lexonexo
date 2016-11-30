@@ -63,15 +63,13 @@ def get_points(username, password):
     destroy_driver(driver)
 
 def create_driver():
-    import os
-    from config import basedir as proj_dir
-
     driver = webdriver.PhantomJS(
         service_args = [
             '--ssl-protocol=any',
             '--ignore-ssl-errors=true'
         ],
-        service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver', 'ghostdriver.log')
+        # service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver', 'ghostdriver.log')
+        service_log_path = Config.SERVICE_LOG_PATH
     )
     driver.set_window_size(1600, 900)
 
