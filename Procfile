@@ -1,1 +1,1 @@
-honcho start -f Procfile.actual 2>&1
+web: honcho start -f Procfile.actual 2>&1
