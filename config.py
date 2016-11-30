@@ -33,6 +33,8 @@ class DevelopmentConfig(Config):
     DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
+    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
+
 class ProductionConfig(Config):
     DEBUG       = False
     SSL_DISABLE = False
@@ -40,6 +42,8 @@ class ProductionConfig(Config):
     WTF_CSRF_ENABLED = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
+    SERVICE_LOG_PATH = os.path.join('var', 'ghostdriver', 'ghostdriver.log')
 
 #------------------------------------------------------------------------------
 # Configs

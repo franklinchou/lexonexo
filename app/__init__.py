@@ -26,7 +26,7 @@ login_manager.login_view = 'auth.login'
 def create_app(config_name):
     app = Flask(__name__)
 
-    # Do I always have to strip quotes from conifg vars taken from env?
+    # Do I always have to strip quotes from config vars taken from env?
     config_name = config_name.strip('\'')
 
     app.config.from_object(config[config_name])
