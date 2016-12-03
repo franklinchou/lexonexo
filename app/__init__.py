@@ -1,3 +1,11 @@
+#------------------------------------------------------------------------------
+# Franklin Chou
+# Initialize python application
+# Last modified 02 DEC 2016
+#------------------------------------------------------------------------------
+
+import os
+
 from flask import Flask, render_template
 
 from flask_bootstrap import Bootstrap
@@ -41,14 +49,14 @@ def create_app(config_name):
 
 
 #------------------------------------------------------------------------------
-    # SSLify
+# SSLify
 #------------------------------------------------------------------------------
     if not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify
         sslify = SSLify(app)
 
 #------------------------------------------------------------------------------
-    # attach routes
+# attach routes
 #------------------------------------------------------------------------------
     from .public import public as public_blueprint
     app.register_blueprint(
@@ -66,5 +74,23 @@ def create_app(config_name):
         url_prefix = '/auth'
     )
 
-    return app
 #------------------------------------------------------------------------------
+# Create ghostdriver log file
+#------------------------------------------------------------------------------
+    create_var_file()
+#------------------------------------------------------------------------------
+
+    return app
+
+def create_var_file():
+
+    basepath = os.path.dirname(os.path.dirname(__file__))
+
+    ghostdriver_log_path = os.path.join(basepath, 'var', 'ghostdriver')
+
+    if not os.path.exists(ghostdriver_log_path):
+        os.makedirs(ghostdriver_log_path)
+
+    ghostdriver_log_filename = 'ghostdriver.log'
+    open(os.path.join(ghostdriver_log_path, ghostdriver_log_filename), 'w')
+

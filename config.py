@@ -18,6 +18,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS  = False
 
     REDIS_URL = os.environ.get('REDIS_URL').strip('\'')
+    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
     @staticmethod
     def init_app(app):
@@ -33,7 +34,6 @@ class DevelopmentConfig(Config):
     DATABASE_URL = os.environ.get('DATABASE_URL').strip('\'')
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
-    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
 class ProductionConfig(Config):
     DEBUG       = False
@@ -42,9 +42,6 @@ class ProductionConfig(Config):
     WTF_CSRF_ENABLED = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-
-    # Updated to account for Heroku path directory
-    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
 #------------------------------------------------------------------------------
 # Configs
