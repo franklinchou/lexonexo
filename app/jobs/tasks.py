@@ -27,7 +27,7 @@ from config import config
 from socket import error as socket_error
 
 # celery = Celery(__name__, broker='redis://localhost:6379/0')
-celery = Celery(__name__, broker=config[os.environ.get('CONFIG')].REDIS_URL)
+celery = Celery(__name__, broker=config[os.environ.get('CONFIG').strip('\'')].REDIS_URL)
 celery.config_from_object('celery_config')
 
 lnq_config = {
@@ -74,7 +74,7 @@ def create_driver():
         ],
         # service_log_path = os.path.join(proj_dir, 'var', 'ghostdriver', 'ghostdriver.log')
         # service_log_path = Config.SERVICE_LOG_PATH
-        service_log_path = config[os.environ.get('CONFIG')].SERVICE_LOG_PATH
+        service_log_path = config[os.environ.get('CONFIG').strip('\'')].SERVICE_LOG_PATH
     )
     driver.set_window_size(1600, 900)
 
