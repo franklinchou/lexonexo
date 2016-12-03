@@ -44,9 +44,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
     # Updated to account for Heroku path directory
-    SERVICE_LOG_PATH = os.path.join(
-        os.path.dirname(basedir), 'var', 'ghostdriver', 'ghostdriver.log'
-    )
+    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
 #------------------------------------------------------------------------------
 # Configs
