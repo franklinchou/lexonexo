@@ -43,7 +43,7 @@ class ProductionConfig(Config):
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
-    SERVICE_LOG_PATH = os.path.join('var', 'ghostdriver', 'ghostdriver.log')
+    SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
 #------------------------------------------------------------------------------
 # Configs
