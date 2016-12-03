@@ -20,6 +20,8 @@ class Config:
     REDIS_URL = os.environ.get('REDIS_URL').strip('\'')
     SERVICE_LOG_PATH = os.path.join(basedir, 'var', 'ghostdriver', 'ghostdriver.log')
 
+    SHU_ONLY = True
+
     @staticmethod
     def init_app(app):
         pass
@@ -42,6 +44,8 @@ class ProductionConfig(Config):
     WTF_CSRF_ENABLED = True
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
+    SHU_ONLY = os.environ.get('SHU_ONLY')
 
 #------------------------------------------------------------------------------
 # Configs

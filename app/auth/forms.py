@@ -13,6 +13,14 @@ from wtforms.validators import Required,\
 
 from ..models import User
 
+#------------------------------------------------------------------------------
+# 03 DEC 2016
+# Imported to give launchtime flexibility over email domains accepted.
+#------------------------------------------------------------------------------
+import os
+from app import config
+#------------------------------------------------------------------------------
+
 class LoginForm(Form):
     email = StringField(
         'Email',
@@ -32,35 +40,29 @@ class LoginForm(Form):
     submit = SubmitField('Login')
 
 class RegistrationForm(Form):
-    email = StringField(
-        'Email',
-        validators = [
-            Required(),
-            Length(5, 64),
-            Regexp(
-                "^([a-zA-Z])*[\.]([a-zA-Z])*@{1}(student\.shu\.edu|shu.edu)$",
-                message = 'Please use your Seton Hall email'
-            )
-        ]
-    )
+    # Is there any better way to do this? It's very messy/not elegant.
+    shu_only = config[os.environ.get('CONFIG').strip('\'')].SHU_ONLY
 
-    password = PasswordField(
-        'Password',
-        validators = [
-            Required(),
-            EqualTo(
-                'password_verify',
-                message = 'Passwords must match'
-            )
-        ]
-    )
-
-    password_verify = PasswordField(
-        'Confirm password',
-        validators = [
-            Required()
-        ]
-    )
+    if (shu_only == True):
+        email = StringField(
+            'Email',
+            validators = [
+                Required(),
+                Length(5, 64),
+                Regexp(
+                    "^([a-zA-Z])*[\.]([a-zA-Z])*@{1}(student\.shu\.edu|shu.edu)$",
+                    message = 'Please use your Seton Hall email'
+                )
+            ]
+        )
+    else:
+        email = StringField(
+            'Email',
+            validators = [
+                Required(),
+                Length(5, 64)
+            ]
+        )
 
     lexis_username = StringField(
         "Lexis Username",

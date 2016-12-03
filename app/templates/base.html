@@ -32,14 +32,13 @@
       <li><a href="{{ url_for('public.privacy') }}">Privacy</a></li>
     </ul>
 
-    <!-- auth -->
+
+    <!-- 03 DEC 2016 -->
+    <!-- removed login/logout; implemented register only -->
     <ul class="nav navbar-nav navbar-right">
-      {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-      {% else %}
-        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-      {% endif %}
+      <li><a href="{{ url_for('auth.register') }}">Register</a></li>
     </ul>
+
 
   </div>
 </div>

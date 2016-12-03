@@ -31,16 +31,18 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
 
-    ### Task id links user to queue
-
     email = db.Column(db.String(64), unique = True, index = True)
-    password_hash = db.Column(db.String(128))
+    # password_hash = db.Column(db.String(128))
 
     la_username = db.Column(db.String(64), unique = True)
     la_password = db.Column(db.String(128))
     # la_password_encrypted = db.Column(db.String(512))
 
-    confirmed = db.Column(db.Boolean, default = False)
+    '''
+        03 DEC 2016
+        Removed `confirmed` boolean, redundant in light of `last_run` field
+    '''
+    # confirmed = db.Column(db.Boolean, default = False)
 
     last_run = db.Column(db.DateTime())
 

@@ -83,7 +83,12 @@ def create_app(config_name):
     return app
 
 def create_var_file():
-
+    """
+        03 DEC 2016
+        Having trouble with creating the ghostdriverlog via heroku bash.
+        The changes seem not to persist, SOLVED by creating the logfile server-
+        side upon application launch in production.
+    """
     basepath = os.path.dirname(os.path.dirname(__file__))
 
     ghostdriver_log_path = os.path.join(basepath, 'var', 'ghostdriver')

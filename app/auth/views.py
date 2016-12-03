@@ -26,31 +26,6 @@ from . import auth
 from ..models import User
 from datetime import datetime
 
-@auth.route('/login', methods = ['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email = form.email.data).first()
-        if user is not None and user.verify_password(form.password.data):
-            login_user(user)
-            return redirect(
-                # request.args.get('next') or url_for('public.index')
-                request.args.get('next') or url_for('main.ran')
-            )
-        # flash()
-    return render_template(
-        'auth/login.html',
-        form = form
-    )
-
-@auth.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    # flash()
-    return redirect(url_for('public.index'))
-
-
 @auth.route('/regd')
 def register_success():
     return render_template(
@@ -74,7 +49,7 @@ def register():
     if form.validate_on_submit():
         user = User(
             email = form.email.data,
-            password = form.password.data,
+            # password = form.password.data,
             la_username = form.lexis_username.data,
             la_password = form.lexis_password.data
         )
