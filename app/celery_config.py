@@ -15,3 +15,10 @@ beat_schedule = {
     },
 }
 
+task_soft_time_limit = 60
+
+"""
+    04 DEC 2016
+    Set value to true to allow underlying task to throw exception
+"""
+task_eager_propogates = True
