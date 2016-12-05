@@ -95,7 +95,10 @@ def create_var_file():
     ghostdriver_log_path = os.path.join(basepath, 'var', 'ghostdriver')
 
     if not os.path.exists(ghostdriver_log_path):
-        os.makedirs(ghostdriver_log_path)
+        try:
+            os.makedirs(ghostdriver_log_path)
+        except FileExistsError:
+            pass
 
     ghostdriver_log_filename = 'ghostdriver.log'
     open(os.path.join(ghostdriver_log_path, ghostdriver_log_filename), 'w')
