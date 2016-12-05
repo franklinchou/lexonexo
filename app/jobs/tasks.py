@@ -28,7 +28,7 @@ from socket import error as socket_error
 
 # celery = Celery(__name__, broker='redis://localhost:6379/0')
 celery = Celery(__name__, broker=config[os.environ.get('CONFIG').strip('\'')].REDIS_URL)
-celery.config_from_object('celery_config')
+celery.config_from_object('app.celery_config')
 
 lnq_config = {
     'LEXIS_BASE_URL'    : "https://advance.lexis.com",
