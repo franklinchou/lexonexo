@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException,\
         TimeoutException
 
+
+from app import celery_config
 from celery import Celery
 
 from .automation_exception import InvalidLanding
