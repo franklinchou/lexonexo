@@ -21,7 +21,7 @@ from datetime import datetime as DT
 from datetime import timedelta
 
 from app import db
-from app.models import User
+from ..models import User
 
 from config import Config
 from config import config
@@ -40,8 +40,6 @@ lnq_config = {
 
 @celery.task(name='tasks.run_outstanding_query')
 def run_outstanding_query():
-    print('here')
-
     try:
         # Search for all accounts where the query has not been run in 24 hours
         users = User.query.filter(User.last_run < DT.now() - timedelta(days=1)).all()
