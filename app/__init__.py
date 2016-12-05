@@ -78,32 +78,36 @@ def create_app(config_name):
 # Prepare production environment
 #------------------------------------------------------------------------------
     # destroy_celery_schedule_file()
-    create_var_file()
+    create_var_files()
 #------------------------------------------------------------------------------
 
     return app
 
-def create_var_file():
+def create_var_files():
     """
         03 DEC 2016
         Having trouble with creating the ghostdriverlog via heroku bash.
         The changes seem not to persist, SOLVED by creating the logfile server-
         side upon application launch in production.
+
+        04 DEC 2016
+        Expanded to include automated creation of celery db
     """
     basepath = os.path.dirname(os.path.dirname(__file__))
 
-    ghostdriver_log_path = os.path.join(basepath, 'var', 'ghostdriver')
+    logs = {
+        'ghostdriver.log' : os.path.join(basepath, 'var', 'ghostdriver'),
+        'celerybeat-schedule.dat': os.path.join(basepath, 'var', 'celery')
+    }
 
-    if not os.path.exists(ghostdriver_log_path):
+    for file_name, path in logs.items():
+        if not os.path.exists(path):
+            os.makedirs(path)
         try:
-            os.makedirs(ghostdriver_log_path)
+            open(os.path.join(path, file_name), 'w')
         except FileExistsError:
             pass
 
-    ghostdriver_log_filename = 'ghostdriver.log'
-    open(os.path.join(ghostdriver_log_path, ghostdriver_log_filename), 'w')
-
 def manage_celery_schedule_file():
     pass
-
 
