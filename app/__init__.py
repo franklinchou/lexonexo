@@ -77,7 +77,7 @@ def create_app(config_name):
 #------------------------------------------------------------------------------
 # Prepare production environment
 #------------------------------------------------------------------------------
-    destroy_celery_schedule_file()
+    # destroy_celery_schedule_file()
     create_var_file()
 #------------------------------------------------------------------------------
 
@@ -103,14 +103,7 @@ def create_var_file():
     ghostdriver_log_filename = 'ghostdriver.log'
     open(os.path.join(ghostdriver_log_path, ghostdriver_log_filename), 'w')
 
-def destroy_celery_schedule_file():
-    """
+def manage_celery_schedule_file():
+    pass
 
-    """
 
-    basepath = os.path.dirname(os.path.dirname(__file__))
-
-    celery_schedule_path = os.path.join(basepath, 'var', 'celery', 'celerybeat-schedule')
-
-    if os.path.isfile(celery_schedule_path):
-        os.remove(celery_schedule_path)
