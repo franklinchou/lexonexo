@@ -1,6 +1,6 @@
 web: gunicorn manage:app --log-file=-
 
-celery_beat: celery -A app.jobs.tasks beat --loglevel=info -l debug
+celery_beat: celery -A app.jobs.tasks beat --loglevel=info -s ./var/celery/celerybeat-schedule-l debug
 
 # scalable
 celery_worker: celery -A app.jobs.tasks worker --loglevel=info
