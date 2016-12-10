@@ -1,3 +1,11 @@
+#------------------------------------------------------------------------------
+# Asynch tasks
+# Franklin Chou
+# Last modified: 10 DEC 2016
+#
+# Implements lexis query and scheduler
+#------------------------------------------------------------------------------
+
 import os
 
 from selenium import webdriver
@@ -19,8 +27,13 @@ from .automation_exception import InvalidLogin
 from datetime import datetime as DT
 from datetime import timedelta
 
+#------------------------------------------------------------------------------
+# Used to create database context
+#------------------------------------------------------------------------------
+from app import create_app
 from app import db
-from .. import models
+from ..models import User
+#------------------------------------------------------------------------------
 
 from config import Config
 from config import config
@@ -39,13 +52,15 @@ lnq_config = {
 
 @celery.task(name='tasks.run_outstanding_query')
 def run_outstanding_query():
+
+    create_app(os.environ.get('CONFIG').strip('\'')).app_context().push()
+
     try:
         # Search for all accounts where the query has not been run in 24 hours
-        users = models.User.query.filter(User.last_run < DT.now() - timedelta(days=1)).all()
-        print(users)
+        users = User.query.filter(User.last_run < DT.now() - timedelta(days=1)).all()
         if (len(users) != 0):
             for user in users:
-                tasks.get_points.delay(user.la_username, user.la_password)
+                get_points.delay(user.la_username, user.la_password)
                 user.last_run = DT.now()
             try:
                 db.session.commit()
