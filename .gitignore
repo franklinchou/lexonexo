@@ -16,7 +16,7 @@ app/main/dep/*
 app/templates/t_metrics.html
 
 #### scheduler
-var/celery/celerybeat-scheduler
+var/celery/celerybeat-schedule
 var/redis/*
 !var/
 !var/ghostdriver
@@ -27,6 +27,7 @@ var/redis/*
 # Log files
 *.log
 out.png
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

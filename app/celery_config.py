@@ -11,7 +11,7 @@ timezone = 'UTC'
 beat_schedule = {
     'run-every-eight-hours': {
         'task': 'tasks.run_outstanding_query',
-        'schedule': crontab(minute='*/1')
+        'schedule': crontab(hours='*/8')
     },
 }
 
